@@ -55,8 +55,8 @@ class AdkSite(models.Model):
             'name': "Équipements - %s" % self.name,
             'res_model': 'adk.equipment',
             'view_mode': 'list,kanban,form',
-            'domain': [('site_id', '=', self.id)],
-            'context': {'default_site_id': self.id},
+            'domain': [('site_ids', 'in', self.id)],
+            'context': {'default_site_ids': [self.id]},
         }
 
     def action_view_blocs(self):
