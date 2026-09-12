@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_equipment" model="ir.actions.report">
+        <field name="name">Rapport d'équipement</field>
+        <field name="model">adk.equipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">adk_service_technique.report_equipment_template</field>
+        <field name="report_file">adk_service_technique.report_equipment_template</field>
+        <field name="binding_model_id" ref="model_adk_equipment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_equipment_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Rapport d'équipement</h2>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Référence</th>
+                                <th>Site</th>
+                                <th>Bloc</th>
+                                <th>Caractéristique</th>
+                                <th>Date d'acquisition</th>
+                                <th>État</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="doc">
+                                <td><span t-field="doc.name"/></td>
+                                <td><span t-field="doc.code"/></td>
+                                <td><span t-esc="', '.join(doc.site_ids.mapped('name'))"/></td>
+                                <td><span t-esc="', '.join(doc.bloc_ids.mapped('name'))"/></td>
+                                <td><span t-field="doc.characteristic"/></td>
+                                <td><span t-field="doc.purchase_date"/></td>
+                                <td><span t-field="doc.state"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

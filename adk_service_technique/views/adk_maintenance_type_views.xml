@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_adk_maintenance_type_kanban" model="ir.ui.view">
+        <field name="name">adk.maintenance.type.kanban</field>
+        <field name="model">adk.maintenance.type</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" sample="1">
+                <field name="name"/>
+                <field name="icone"/>
+                <field name="couleur"/>
+                <field name="maintenance_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click p-3 text-center"
+                             t-attf-class="oe_kanban_color_#{record.couleur.raw_value}">
+                            <i t-attf-class="fa #{record.icone.raw_value || 'fa-wrench'} fa-2x mb-2"/>
+                            <div class="o_kanban_record_title fw-bold"><field name="name"/></div>
+                            <div class="text-muted"><t t-esc="record.maintenance_count.raw_value"/> intervention(s)</div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_adk_maintenance_type_list" model="ir.ui.view">
+        <field name="name">adk.maintenance.type.list</field>
+        <field name="model">adk.maintenance.type</field>
+        <field name="arch" type="xml">
+            <list string="Types de maintenance" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="icone"/>
+                <field name="maintenance_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_adk_maintenance_type_form" model="ir.ui.view">
+        <field name="name">adk.maintenance.type.form</field>
+        <field name="model">adk.maintenance.type</field>
+        <field name="arch" type="xml">
+            <form string="Type de maintenance">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_maintenances"
+                                icon="fa-clipboard" invisible="not id">
+                            <field name="maintenance_count" widget="statinfo" string="Interventions"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="icone" placeholder="fa-wrench"/>
+                            <field name="couleur" widget="color_picker"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description du type de maintenance..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_adk_maintenance_type" model="ir.actions.act_window">
+        <field name="name">Types de maintenance</field>
+        <field name="res_model">adk.maintenance.type</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez un type de maintenance</p>
+            <p>Ex: Préventive, Corrective, Curative, Inspection...</p>
+        </field>
+    </record>
+
+</odoo>

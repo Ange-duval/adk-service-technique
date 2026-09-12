@@ -1,0 +1,72 @@
+.o_adk_dashboard {
+    padding: 20px 24px;
+    background-color: #f7f8fa;
+    height: 100%;
+    overflow-y: auto;
+
+    .o_adk_kpi_card {
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1) !important;
+        }
+
+        .o_adk_kpi_value {
+            font-size: 1.9rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .o_adk_kpi_icon {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+            font-size: 1.6rem;
+            opacity: 0.25;
+        }
+    }
+
+    .o_adk_type_card {
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, .06);
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            filter: brightness(0.96);
+        }
+    }
+
+    // Odoo kanban color palette (index -> hue), lightweight reuse for type cards
+    @for $i from 0 through 11 {
+        .o_adk_color_#{$i} {
+            background-color: nth(
+                (#fefefe, #f0f0f0, #f9d0c4, #f5c1cf, #dfceef, #cee4f2, #bfe7e2, #d1e5c6, #f7e2ac, #f7c9a3, #e6cee0, #d9e6f5),
+                $i + 1
+            );
+        }
+    }
+
+    .o_adk_table {
+        tr.o_adk_row_clickable {
+            cursor: pointer;
+        }
+    }
+
+    .o_adk_team_row {
+        cursor: pointer;
+        padding: 6px 4px;
+        border-radius: 6px;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, .03);
+        }
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(0, 0, 0, .06);
+    }
+}

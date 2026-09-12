@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="adk_service_technique.Dashboard">
+        <div class="o_adk_dashboard">
+            <div t-if="state.loading" class="o_adk_loading text-center p-5">
+                <i class="fa fa-spinner fa-spin fa-2x text-muted"/>
+            </div>
+            <div t-else="" class="o_adk_dashboard_content">
+
+                <!-- Header -->
+                <div class="o_adk_header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <div>
+                        <h2 class="mb-0"><i class="fa fa-wrench me-2"/>Service Technique</h2>
+                        <div class="text-muted">Vue d'ensemble des interventions, sites et équipes</div>
+                    </div>
+                    <button class="btn btn-primary" t-on-click="() => this.onClickNewIntervention()">
+                        <i class="fa fa-plus me-1"/>Nouvelle intervention
+                    </button>
+                </div>
+
+                <!-- KPI cards -->
+                <div class="o_adk_kpi_row row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="o_adk_kpi_card card h-100 border-0 shadow-sm" t-on-click="() => this.onClickTotal()">
+                            <div class="card-body">
+                                <div class="text-muted small">Total interventions</div>
+                                <div class="o_adk_kpi_value"><t t-esc="state.data.kpis.total"/></div>
+                                <i class="fa fa-clipboard-list o_adk_kpi_icon text-primary"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="o_adk_kpi_card card h-100 border-0 shadow-sm" t-on-click="() => this.onClickInProgress()">
+                            <div class="card-body">
+                                <div class="text-muted small">En cours</div>
+                                <div class="o_adk_kpi_value text-warning"><t t-esc="state.data.kpis.in_progress"/></div>
+                                <i class="fa fa-hourglass-half o_adk_kpi_icon text-warning"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="o_adk_kpi_card card h-100 border-0 shadow-sm" t-on-click="() => this.onClickDone()">
+                            <div class="card-body">
+                                <div class="text-muted small">Taux de résolution</div>
+                                <div class="o_adk_kpi_value text-success"><t t-esc="state.data.kpis.resolution_rate"/>%</div>
+                                <i class="fa fa-check-circle o_adk_kpi_icon text-success"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="o_adk_kpi_card card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="text-muted small">Équipements en panne</div>
+                                <div class="o_adk_kpi_value text-danger"><t t-esc="state.data.kpis.equipment_issue_count"/></div>
+                                <i class="fa fa-exclamation-triangle o_adk_kpi_icon text-danger"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Types de maintenance (kanban) -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white fw-bold">
+                                <i class="fa fa-th-large me-2"/>Types de maintenance
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-6" t-foreach="state.data.by_type" t-as="type" t-key="type.id">
+                                        <div class="o_adk_type_card p-2 text-center rounded"
+                                             t-attf-class="o_adk_color_#{type.color}"
+                                             t-on-click="() => this.onClickType(type.id)">
+                                            <i t-attf-class="fa #{type.icon} fa-lg mb-1"/>
+                                            <div class="fw-bold small"><t t-esc="type.name"/></div>
+                                            <div class="text-muted small"><t t-esc="type.count"/> intervention(s)</div>
+                                        </div>
+                                    </div>
+                                    <div t-if="!state.data.by_type.length" class="text-muted p-2">
+                                        Aucun type de maintenance configuré.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sites -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white fw-bold">
+                                <i class="fa fa-map-marker me-2"/>Points de contrôle (Sites)
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0 o_adk_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Site</th>
+                                            <th class="text-center">Blocs</th>
+                                            <th class="text-center">Équip.</th>
+                                            <th class="text-center">En cours</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.data.by_site" t-as="site" t-key="site.id"
+                                            t-on-click="() => this.onClickSite(site.id)" class="o_adk_row_clickable">
+                                            <td><t t-esc="site.name"/></td>
+                                            <td class="text-center"><t t-esc="site.bloc_count"/></td>
+                                            <td class="text-center"><t t-esc="site.equipment_count"/></td>
+                                            <td class="text-center">
+                                                <span t-if="site.open_count" class="badge text-bg-warning"><t t-esc="site.open_count"/></span>
+                                                <span t-else="" class="text-muted">-</span>
+                                            </td>
+                                        </tr>
+                                        <tr t-if="!state.data.by_site.length">
+                                            <td colspan="4" class="text-muted text-center p-3">Aucun site créé.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Équipes -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white fw-bold">
+                                <i class="fa fa-users me-2"/>Performance des équipes
+                            </div>
+                            <div class="card-body">
+                                <div t-foreach="state.data.by_team" t-as="team" t-key="team.id"
+                                     class="o_adk_team_row mb-3" t-on-click="() => this.onClickTeam(team.id)">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold"><t t-esc="team.name"/></span>
+                                        <span class="text-muted small">
+                                            <t t-esc="team.intervention_count"/> intervention(s) · Ø <t t-esc="team.avg_duration"/>h
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                             t-attf-style="width: #{team.success_rate}%"/>
+                                    </div>
+                                    <div class="text-end small text-muted"><t t-esc="team.success_rate"/>% de résolution</div>
+                                </div>
+                                <div t-if="!state.data.by_team.length" class="text-muted p-2">
+                                    Aucune équipe créée.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dernières interventions -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white fw-bold">
+                                <i class="fa fa-history me-2"/>Dernières interventions
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <a href="#" class="list-group-item list-group-item-action"
+                                   t-foreach="state.data.recent" t-as="rec" t-key="rec.id"
+                                   t-on-click.prevent="() => this.onClickRecent(rec.id)">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold"><t t-esc="rec.name"/></span>
+                                        <span t-attf-class="badge #{this.stateBadgeClass(rec.state)}">
+                                            <t t-esc="this.stateLabel(rec.state)"/>
+                                        </span>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <t t-esc="rec.site"/><t t-if="rec.bloc"> / <t t-esc="rec.bloc"/></t>
+                                        · <t t-esc="rec.type"/>
+                                    </div>
+                                </a>
+                                <div t-if="!state.data.recent.length" class="text-muted p-3">
+                                    Aucune intervention enregistrée.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="module_category_adk" model="ir.module.category">
+            <field name="name">ADK Service Technique</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="group_adk_user" model="res.groups">
+            <field name="name">Agent / Utilisateur</field>
+            <field name="category_id" ref="module_category_adk"/>
+            <field name="comment">Peut créer et suivre les interventions, consulter le dashboard.</field>
+        </record>
+
+        <record id="group_adk_manager" model="res.groups">
+            <field name="name">Responsable</field>
+            <field name="category_id" ref="module_category_adk"/>
+            <field name="implied_ids" eval="[(4, ref('group_adk_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Accès complet : configuration, sites, équipes, équipements, rapports.</field>
+        </record>
+    </data>
+</odoo>

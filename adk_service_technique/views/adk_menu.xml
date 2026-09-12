@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_adk_root" name="ADK Service Technique" sequence="10"
+              web_icon="adk_service_technique,static/description/icon.png"
+              groups="adk_service_technique.group_adk_user"/>
+
+    <menuitem id="menu_adk_dashboard" name="Dashboard" parent="menu_adk_root"
+              action="action_adk_dashboard" sequence="10"/>
+
+    <menuitem id="menu_adk_maintenance_root" name="Maintenances" parent="menu_adk_root" sequence="20"/>
+    <menuitem id="menu_adk_maintenance" name="Interventions" parent="menu_adk_maintenance_root"
+              action="action_adk_maintenance" sequence="10"/>
+    <menuitem id="menu_adk_maintenance_type" name="Types de maintenance" parent="menu_adk_maintenance_root"
+              action="action_adk_maintenance_type" sequence="20"
+              groups="adk_service_technique.group_adk_manager"/>
+
+    <menuitem id="menu_adk_team_root" name="Équipes" parent="menu_adk_root" sequence="30"/>
+    <menuitem id="menu_adk_team" name="Équipes de maintenance" parent="menu_adk_team_root"
+              action="action_adk_team" sequence="10"/>
+
+    <menuitem id="menu_adk_pc_root" name="Point de contrôle et Bloc" parent="menu_adk_root" sequence="40"/>
+    <menuitem id="menu_adk_site" name="Points de contrôle" parent="menu_adk_pc_root"
+              action="action_adk_site" sequence="10"/>
+    <menuitem id="menu_adk_bloc" name="Blocs" parent="menu_adk_pc_root"
+              action="action_adk_bloc" sequence="20"/>
+
+    <menuitem id="menu_adk_equipment_root" name="Équipement" parent="menu_adk_root" sequence="50"/>
+    <menuitem id="menu_adk_equipment" name="Équipements" parent="menu_adk_equipment_root"
+              action="action_adk_equipment" sequence="10"/>
+
+    <menuitem id="menu_adk_report_root" name="Rapport" parent="menu_adk_root" sequence="60"/>
+    <menuitem id="menu_adk_report_wizard" name="Générer un rapport" parent="menu_adk_report_root"
+              action="adk_service_technique.action_adk_report_wizard" sequence="10"/>
+    <menuitem id="menu_adk_report_global" name="Rapport global (tous les sites)" parent="menu_adk_report_root"
+              action="adk_service_technique.action_server_print_global_report" sequence="20"/>
+
+    <menuitem id="menu_adk_config_root" name="Configuration" parent="menu_adk_root" sequence="70"
+              groups="adk_service_technique.group_adk_manager"/>
+    <menuitem id="menu_adk_config_maintenance_type" name="Types de maintenance" parent="menu_adk_config_root"
+              action="action_adk_maintenance_type" sequence="10"/>
+    <menuitem id="menu_adk_config_site" name="Points de contrôle" parent="menu_adk_config_root"
+              action="action_adk_site" sequence="20"/>
+    <menuitem id="menu_adk_config_bloc" name="Blocs" parent="menu_adk_config_root"
+              action="action_adk_bloc" sequence="30"/>
+    <menuitem id="menu_adk_config_team" name="Équipes" parent="menu_adk_config_root"
+              action="action_adk_team" sequence="40"/>
+
+</odoo>

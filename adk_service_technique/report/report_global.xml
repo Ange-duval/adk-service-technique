@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_global" model="ir.actions.report">
+        <field name="name">Rapport global (Points de contrôle et Blocs)</field>
+        <field name="model">adk.site</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">adk_service_technique.report_global_template</field>
+        <field name="report_file">adk_service_technique.report_global_template</field>
+        <field name="binding_model_id" ref="model_adk_site"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Rapport Global Service Technique'</field>
+    </record>
+
+    <record id="action_server_print_global_report" model="ir.actions.server">
+        <field name="name">Rapport global (tous les points de contrôle)</field>
+        <field name="model_id" ref="model_adk_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_print_global_report()</field>
+    </record>
+
+    <template id="report_global_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+
+                    <div class="text-center mb-4">
+                        <h2>Rapport Global — Service Technique</h2>
+                        <div class="text-muted">
+                            Tous les points de contrôle, blocs et équipements
+                        </div>
+                        <div class="text-muted small">
+                            Généré le <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y à %H:%M')"/>
+                        </div>
+                    </div>
+
+                    <!-- Synthèse générale -->
+                    <h4>Synthèse générale</h4>
+                    <table class="table table-sm table-bordered mb-4">
+                        <thead>
+                            <tr class="table-light">
+                                <th>Point de contrôle</th>
+                                <th class="text-center">Blocs</th>
+                                <th class="text-center">Équipements</th>
+                                <th class="text-center">Interventions</th>
+                                <th class="text-center">En cours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="site">
+                                <td><span t-field="site.name"/></td>
+                                <td class="text-center"><span t-field="site.bloc_count"/></td>
+                                <td class="text-center"><span t-field="site.equipment_count"/></td>
+                                <td class="text-center"><span t-field="site.maintenance_count"/></td>
+                                <td class="text-center">
+                                    <span t-if="site.maintenance_open_count" class="badge text-bg-warning">
+                                        <span t-field="site.maintenance_open_count"/>
+                                    </span>
+                                    <span t-else="">-</span>
+                                </td>
+                            </tr>
+                            <tr t-if="not docs">
+                                <td colspan="5" class="text-center text-muted">Aucun point de contrôle enregistré.</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="fw-bold table-light">
+                                <td>TOTAL</td>
+                                <td class="text-center"><t t-esc="sum(docs.mapped('bloc_count'))"/></td>
+                                <td class="text-center"><t t-esc="sum(docs.mapped('equipment_count'))"/></td>
+                                <td class="text-center"><t t-esc="sum(docs.mapped('maintenance_count'))"/></td>
+                                <td class="text-center"><t t-esc="sum(docs.mapped('maintenance_open_count'))"/></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Détail par site -->
+                    <h4 class="mt-4">Détail par point de contrôle</h4>
+
+                    <t t-foreach="docs" t-as="site">
+                        <div class="mt-4" style="page-break-inside: avoid;">
+                            <h5 style="border-bottom: 2px solid #333; padding-bottom: 4px;">
+                                <span t-field="site.name"/>
+                                <t t-if="site.code"> — <span t-field="site.code"/></t>
+                            </h5>
+                            <div class="row mb-2 small">
+                                <div class="col-6" t-if="site.address">
+                                    <strong>Adresse :</strong> <span t-field="site.address"/>
+                                </div>
+                                <div class="col-6" t-if="site.partner_id">
+                                    <strong>Client / Responsable :</strong> <span t-field="site.partner_id.name"/>
+                                </div>
+                            </div>
+
+                            <t t-if="site.bloc_ids">
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr class="table-light">
+                                            <th style="width: 20%">Bloc</th>
+                                            <th>Équipement</th>
+                                            <th style="width: 15%">Référence</th>
+                                            <th style="width: 15%">État</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="site.bloc_ids" t-as="bloc">
+                                            <t t-if="bloc.equipment_ids">
+                                                <t t-foreach="bloc.equipment_ids" t-as="equip">
+                                                    <tr>
+                                                        <td><span t-field="bloc.name"/></td>
+                                                        <td><span t-field="equip.name"/></td>
+                                                        <td><span t-field="equip.code"/></td>
+                                                        <td>
+                                                            <span t-if="equip.state == 'good'" class="badge text-bg-success">Bon fonctionnement</span>
+                                                            <span t-if="equip.state == 'issue'" class="badge text-bg-danger">En panne</span>
+                                                            <span t-if="equip.state == 'maintenance'" class="badge text-bg-warning">En maintenance</span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                            <tr t-if="not bloc.equipment_ids">
+                                                <td><span t-field="bloc.name"/></td>
+                                                <td colspan="3" class="text-muted fst-italic">Aucun équipement enregistré</td>
+                                            </tr>
+                                        </t>
+                                        <t t-set="orphan_equipments" t-value="site.equipment_ids.filtered(lambda e: not e.bloc_ids)"/>
+                                        <t t-if="orphan_equipments" t-foreach="orphan_equipments" t-as="equip">
+                                            <tr>
+                                                <td class="text-muted">— (sans bloc)</td>
+                                                <td><span t-field="equip.name"/></td>
+                                                <td><span t-field="equip.code"/></td>
+                                                <td>
+                                                    <span t-if="equip.state == 'good'" class="badge text-bg-success">Bon fonctionnement</span>
+                                                    <span t-if="equip.state == 'issue'" class="badge text-bg-danger">En panne</span>
+                                                    <span t-if="equip.state == 'maintenance'" class="badge text-bg-warning">En maintenance</span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <p class="text-muted fst-italic">Aucun bloc enregistré pour ce point de contrôle.</p>
+                            </t>
+                        </div>
+                    </t>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
