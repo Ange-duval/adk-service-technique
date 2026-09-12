@@ -10,6 +10,21 @@ ADK SERVICE TECHNIQUE
 =====================
 Professional technical service and maintenance management for Odoo 18.
 
+RÔLES UTILISATEURS ET DROITS D'ACCÈS
+-------------------------------------
+Le module définit deux rôles (groupes) d'accès :
+
+* Responsable (Manager) : accès complet à tout le module — création, modification
+  et suppression des points de contrôle (sites), blocs, équipements, types de
+  maintenance, équipes et interventions. Accès au menu Configuration et aux
+  rapports globaux.
+* Agent / Utilisateur : peut créer et suivre les interventions (maintenances) et
+  gérer les équipements au quotidien (sans suppression). Consultation en lecture
+  seule des points de contrôle, blocs, types de maintenance et équipes, ainsi que
+  du tableau de bord. Ne voit pas le menu Configuration.
+
+FONCTIONNALITÉS
+----------------
 * Integrated dashboard for interventions, sites, teams and maintenance KPIs.
 * End-to-end intervention management: anomaly, diagnosis, measures and corrective actions.
 * Sites and blocks for structured technical locations and control points.
