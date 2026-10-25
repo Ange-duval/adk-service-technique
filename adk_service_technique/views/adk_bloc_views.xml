@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_adk_bloc_list" model="ir.ui.view">
+        <field name="name">adk.bloc.list</field>
+        <field name="model">adk.bloc</field>
+        <field name="arch" type="xml">
+            <list string="Blocs" editable="bottom" sample="1">
+                <field name="site_id"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="equipment_count"/>
+                <field name="maintenance_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_adk_bloc_form" model="ir.ui.view">
+        <field name="name">adk.bloc.form</field>
+        <field name="model">adk.bloc</field>
+        <field name="arch" type="xml">
+            <form string="Bloc de contrôle">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_maintenances"
+                                icon="fa-clipboard" invisible="not id">
+                            <field name="maintenance_count" widget="statinfo" string="Interventions"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Ex: Bureau directeur"/></h1>
+                    </div>
+                    <group>
+                        <field name="site_id"/>
+                        <field name="description"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_adk_bloc_search" model="ir.ui.view">
+        <field name="name">adk.bloc.search</field>
+        <field name="model">adk.bloc</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un bloc">
+                <field name="name"/>
+                <field name="site_id"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Point de contrôle" name="group_site" context="{'group_by': 'site_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_adk_bloc" model="ir.actions.act_window">
+        <field name="name">Blocs</field>
+        <field name="res_model">adk.bloc</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_adk_bloc_search"/>
+        <field name="context">{'search_default_group_site': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez votre premier bloc</p>
+            <p>Un bloc est un lieu précis rattaché à un point de contrôle (ex: Bureau directeur, Hall...).</p>
+        </field>
+    </record>
+
+</odoo>

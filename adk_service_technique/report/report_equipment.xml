@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_equipment" model="ir.actions.report">
+        <field name="name">Rapport d'équipement</field>
+        <field name="model">adk.equipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">adk_service_technique.report_equipment_template</field>
+        <field name="report_file">adk_service_technique.report_equipment_template</field>
+        <field name="binding_model_id" ref="model_adk_equipment"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Rapport equipements'</field>
+    </record>
+
+    <template id="report_equipment_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-size: 12px;">
+                    <h2 class="text-center mb-1">Rapport d'équipement</h2>
+                    <div class="text-center text-muted mb-3">
+                        <t t-set="sites" t-value="docs.mapped('site_ids')"/>
+                        <span t-if="len(sites) == 1">Point de contrôle : <strong t-out="sites.name"/> · </span>
+                        <span><t t-out="len(docs)"/> équipement(s)</span>
+                        <span> · <t t-out="len(docs.filtered(lambda e: e.state == 'issue'))"/> en panne ·
+                            <t t-out="len(docs.filtered(lambda e: e.state == 'maintenance'))"/> en maintenance</span>
+                    </div>
+                    <table class="table table-sm table-bordered">
+                        <thead style="display: table-header-group;">
+                            <tr class="table-light">
+                                <th>Équipement</th>
+                                <th>Référence</th>
+                                <th>Site / Bloc</th>
+                                <th>Caractéristique</th>
+                                <th>Acquisition</th>
+                                <th>Fin de garantie</th>
+                                <th>État</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="doc" style="page-break-inside: avoid;">
+                                <td><strong><span t-field="doc.name"/></strong></td>
+                                <td><span t-field="doc.code"/></td>
+                                <td>
+                                    <span t-out="', '.join(doc.site_ids.mapped('name'))"/>
+                                    <div t-if="doc.bloc_ids" class="text-muted"><span t-out="', '.join(doc.bloc_ids.mapped('name'))"/></div>
+                                </td>
+                                <td><span t-field="doc.characteristic"/></td>
+                                <td><span t-field="doc.purchase_date"/></td>
+                                <td><span t-field="doc.warranty_date"/></td>
+                                <td>
+                                    <span t-if="doc.state == 'good'" class="badge text-bg-success"><span t-field="doc.state"/></span>
+                                    <span t-elif="doc.state == 'issue'" class="badge text-bg-danger"><span t-field="doc.state"/></span>
+                                    <span t-else="" class="badge text-bg-warning"><span t-field="doc.state"/></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

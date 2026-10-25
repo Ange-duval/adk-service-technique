@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Format A4 paysage : le tableau de suivi comporte de nombreuses colonnes -->
+    <record id="paperformat_adk_landscape" model="report.paperformat">
+        <field name="name">ADK A4 Paysage</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">38</field>
+        <field name="margin_bottom">22</field>
+        <field name="margin_left">8</field>
+        <field name="margin_right">8</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">32</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_intervention" model="ir.actions.report">
+        <field name="name">Rapport de suivi d'intervention</field>
+        <field name="model">adk.maintenance</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">adk_service_technique.report_intervention_template</field>
+        <field name="report_file">adk_service_technique.report_intervention_template</field>
+        <field name="paperformat_id" ref="paperformat_adk_landscape"/>
+        <field name="binding_model_id" ref="model_adk_maintenance"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Suivi des interventions'</field>
+    </record>
+
+    <template id="report_intervention_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-size: 12px;">
+                    <h2 class="text-center mb-1">Rapport de suivi d'intervention</h2>
+                    <div class="text-center text-muted mb-3">
+                        <t t-set="sites" t-value="docs.mapped('site_id')"/>
+                        <span t-if="len(sites) == 1">Point de contrôle : <strong t-out="sites.name"/> · </span>
+                        <span><t t-out="len(docs)"/> intervention(s)</span>
+                        <span> · <t t-out="len(docs.filtered(lambda d: d.state == 'done'))"/> terminée(s) ·
+                            <t t-out="len(docs.filtered(lambda d: d.state in ('draft', 'in_progress')))"/> ouverte(s)</span>
+                    </div>
+                    <table class="table table-sm table-bordered" style="table-layout: fixed; width: 100%;">
+                        <thead style="display: table-header-group;">
+                            <tr class="table-light">
+                                <th style="width: 9%;">Référence</th>
+                                <th style="width: 9%;">Date du constat</th>
+                                <th style="width: 14%;">Site / Bloc</th>
+                                <th style="width: 12%;">Équipement</th>
+                                <th style="width: 9%;">Type</th>
+                                <th style="width: 10%;">Intervenants</th>
+                                <th style="width: 14%;">Anomalie (diagnostic)</th>
+                                <th style="width: 14%;">Solution (mesures / actions)</th>
+                                <th style="width: 9%;">Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="doc" style="page-break-inside: avoid;">
+                                <td><strong><span t-field="doc.name"/></strong>
+                                    <div t-if="doc.priority == '1'"><span class="badge text-bg-danger">Urgente</span></div>
+                                </td>
+                                <td><span t-field="doc.detection_date" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy HH:mm'}"/></td>
+                                <td>
+                                    <span t-field="doc.site_id.name"/>
+                                    <div t-if="doc.bloc_id" class="text-muted"><span t-field="doc.bloc_id.name"/></div>
+                                </td>
+                                <td><span t-field="doc.equipment_id.name"/></td>
+                                <td><span t-field="doc.maintenance_type_id.name"/></td>
+                                <td>
+                                    <t t-if="doc.intervention_mode == 'team'"><span t-out="doc.team_id.name"/></t>
+                                    <t t-else=""><span t-out="', '.join(doc.agent_ids.mapped('name'))"/></t>
+                                </td>
+                                <td><span t-field="doc.diagnostic"/></td>
+                                <td>
+                                    <div t-if="doc.measures_taken"><strong>Mesures :</strong> <span t-field="doc.measures_taken"/></div>
+                                    <div t-if="doc.corrective_actions"><strong>À mener :</strong> <span t-field="doc.corrective_actions"/></div>
+                                </td>
+                                <td>
+                                    <span t-if="doc.state == 'done'" class="badge text-bg-success"><span t-field="doc.state"/></span>
+                                    <span t-elif="doc.state == 'in_progress'" class="badge text-bg-warning"><span t-field="doc.state"/></span>
+                                    <span t-elif="doc.state == 'cancel'" class="badge text-bg-danger"><span t-field="doc.state"/></span>
+                                    <span t-else="" class="badge text-bg-secondary"><span t-field="doc.state"/></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

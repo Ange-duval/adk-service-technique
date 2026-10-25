@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Séquence pour les fiches de maintenance -->
+        <record id="seq_adk_maintenance" model="ir.sequence">
+            <field name="name">ADK Maintenance</field>
+            <field name="code">adk.maintenance</field>
+            <field name="prefix">INT/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Types de maintenance par défaut -->
+        <record id="type_maintenance_preventive" model="adk.maintenance.type">
+            <field name="name">Maintenance Préventive</field>
+            <field name="code">PREV</field>
+            <field name="sequence">10</field>
+            <field name="icone">fa-shield</field>
+            <field name="couleur">10</field>
+        </record>
+        <record id="type_maintenance_corrective" model="adk.maintenance.type">
+            <field name="name">Maintenance Corrective</field>
+            <field name="code">CORR</field>
+            <field name="sequence">20</field>
+            <field name="icone">fa-wrench</field>
+            <field name="couleur">1</field>
+        </record>
+        <record id="type_maintenance_curative" model="adk.maintenance.type">
+            <field name="name">Maintenance Curative</field>
+            <field name="code">CURA</field>
+            <field name="sequence">30</field>
+            <field name="icone">fa-medkit</field>
+            <field name="couleur">3</field>
+        </record>
+        <record id="type_maintenance_inspection" model="adk.maintenance.type">
+            <field name="name">Inspection / Contrôle</field>
+            <field name="code">INSP</field>
+            <field name="sequence">40</field>
+            <field name="icone">fa-search</field>
+            <field name="couleur">4</field>
+        </record>
+    </data>
+</odoo>
