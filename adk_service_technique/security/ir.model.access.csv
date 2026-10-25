@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_adk_site_user,adk.site.user,model_adk_site,group_adk_user,1,0,0,0
+access_adk_site_manager,adk.site.manager,model_adk_site,group_adk_manager,1,1,1,1
+access_adk_bloc_user,adk.bloc.user,model_adk_bloc,group_adk_user,1,0,0,0
+access_adk_bloc_manager,adk.bloc.manager,model_adk_bloc,group_adk_manager,1,1,1,1
+access_adk_equipment_user,adk.equipment.user,model_adk_equipment,group_adk_user,1,1,1,0
+access_adk_equipment_manager,adk.equipment.manager,model_adk_equipment,group_adk_manager,1,1,1,1
+access_adk_maintenance_type_user,adk.maintenance.type.user,model_adk_maintenance_type,group_adk_user,1,0,0,0
+access_adk_maintenance_type_manager,adk.maintenance.type.manager,model_adk_maintenance_type,group_adk_manager,1,1,1,1
+access_adk_team_user,adk.team.user,model_adk_team,group_adk_user,1,0,0,0
+access_adk_team_manager,adk.team.manager,model_adk_team,group_adk_manager,1,1,1,1
+access_adk_maintenance_user,adk.maintenance.user,model_adk_maintenance,group_adk_user,1,1,1,0
+access_adk_maintenance_manager,adk.maintenance.manager,model_adk_maintenance,group_adk_manager,1,1,1,1
+access_adk_report_wizard_user,adk.report.wizard.user,model_adk_report_wizard,group_adk_user,1,1,1,1
+access_adk_report_wizard_manager,adk.report.wizard.manager,model_adk_report_wizard,group_adk_manager,1,1,1,1
